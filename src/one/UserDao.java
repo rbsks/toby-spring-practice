@@ -1,0 +1,56 @@
+package one;
+
+import java.sql.*;
+
+public class UserDao {
+
+    public void add(User user) throws ClassNotFoundException, SQLException {
+        // db connection
+        Connection connection = getConnection();
+
+        // add user
+        PreparedStatement ps = connection.prepareStatement(
+                "insert into users(id, name, password) values(?, ?, ?)");
+        ps.setString(1, user.getId());
+        ps.setString(2, user.getName());
+        ps.setString(3, user.getPassword());
+
+        ps.executeUpdate();
+
+        // connection close
+        ps.close();
+        connection.close();
+    }
+
+    public User get(String id) throws ClassNotFoundException, SQLException {
+        // db connection
+        Connection connection = getConnection();
+
+        // get user
+        PreparedStatement ps = connection.prepareStatement(
+                "select * from users where id = ?");
+        ps.setString(1, id);
+
+        ResultSet rs = ps.executeQuery();
+        rs.next();
+        User user = new User();
+        user.setId(rs.getString("id"));
+        user.setName(rs.getString("name"));
+        user.setPassword(rs.getString("password"));
+
+        // connection close
+        rs.close();
+        ps.close();
+        connection.close();
+
+        return user;
+    }
+
+    // 관심사의 분리
+    private Connection getConnection() throws ClassNotFoundException, SQLException {
+        Class.forName("com.mysql.cj.jdbc.Driver");
+        Connection connection = DriverManager.getConnection(
+                "jdbc:mysql://localhost:3306/toby?autoReconnect=True", "toby_use", "db1234");
+        return connection;
+    }
+}
