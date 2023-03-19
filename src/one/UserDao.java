@@ -2,11 +2,18 @@ package one;
 
 import java.sql.*;
 
-public abstract class UserDao {
+public class UserDao {
+
+    private ConnectionMaker connectionMaker;
+
+    public UserDao(ConnectionMaker connectionMaker) {
+        this.connectionMaker = connectionMaker;
+//        this.connectionMaker = new DConnectionMaker();
+    }
 
     public void add(User user) throws ClassNotFoundException, SQLException {
         // db connection
-        Connection connection = getConnection();
+        Connection connection = connectionMaker.makeConnection();
 
         // add user
         PreparedStatement ps = connection.prepareStatement(
@@ -24,7 +31,7 @@ public abstract class UserDao {
 
     public User get(String id) throws ClassNotFoundException, SQLException {
         // db connection
-        Connection connection = getConnection();
+        Connection connection = connectionMaker.makeConnection();
 
         // get user
         PreparedStatement ps = connection.prepareStatement(
@@ -47,7 +54,7 @@ public abstract class UserDao {
     }
 
     // 상속을 통한 확장
-    public abstract Connection getConnection() throws ClassNotFoundException, SQLException;
+//    public abstract Connection getConnection() throws ClassNotFoundException, SQLException;
 //     관심사의 분리
 //    private Connection getConnection() throws ClassNotFoundException, SQLException {
 //        Class.forName("com.mysql.cj.jdbc.Driver");
