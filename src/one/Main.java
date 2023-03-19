@@ -5,10 +5,10 @@ import java.sql.SQLException;
 public class Main {
 
     public static void main(String[] args) throws ClassNotFoundException, SQLException {
-        UserDao userDao = new UserDao();
+        UserDao userDao = new DUserDao();
 
         User user = new User();
-        user.setId("rbsks");
+        user.setId("rbsks147");
         user.setName("한규빈");
         user.setPassword("11111");
 

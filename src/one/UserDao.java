@@ -2,7 +2,7 @@ package one;
 
 import java.sql.*;
 
-public class UserDao {
+public abstract class UserDao {
 
     public void add(User user) throws ClassNotFoundException, SQLException {
         // db connection
@@ -46,11 +46,13 @@ public class UserDao {
         return user;
     }
 
-    // 관심사의 분리
-    private Connection getConnection() throws ClassNotFoundException, SQLException {
-        Class.forName("com.mysql.cj.jdbc.Driver");
-        Connection connection = DriverManager.getConnection(
-                "jdbc:mysql://localhost:3306/toby?autoReconnect=True", "toby_use", "db1234");
-        return connection;
-    }
+    // 상속을 통한 확장
+    public abstract Connection getConnection() throws ClassNotFoundException, SQLException;
+//     관심사의 분리
+//    private Connection getConnection() throws ClassNotFoundException, SQLException {
+//        Class.forName("com.mysql.cj.jdbc.Driver");
+//        Connection connection = DriverManager.getConnection(
+//                "jdbc:mysql://localhost:3306/toby?autoReconnect=True", "toby_use", "db1234");
+//        return connection;
+//    }
 }
