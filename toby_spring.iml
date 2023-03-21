@@ -8,5 +8,12 @@
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="library" name="mysql-connector-j-8.0.32" level="project" />
+    <orderEntry type="library" name="commons-logging-1.2" level="project" />
+    <orderEntry type="library" name="spring-expression-5.3.18" level="project" />
+    <orderEntry type="library" name="spring-beans-5.3.18" level="project" />
+    <orderEntry type="library" name="spring-context-5.3.18" level="project" />
+    <orderEntry type="library" name="com.springsource.net.sf.cglib-2.2.0" level="project" />
+    <orderEntry type="library" name="spring-aop-5.3.18" level="project" />
+    <orderEntry type="library" name="spring-core-5.3.18" level="project" />
   </component>
 </module>
