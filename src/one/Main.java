@@ -9,7 +9,7 @@ import java.sql.SQLException;
 public class Main {
 
     public static void main(String[] args) throws ClassNotFoundException, SQLException {
-        JUnitCore.main("one.UserDaoTest");
+//        JUnitCore.main("one.UserDaoTest");
 //        UserDao userDao = new UserDao(new DConnectionMaker());
 //        UserDao userDao = new DaoFactory().userDao();
 

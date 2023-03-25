@@ -1,6 +1,10 @@
 package one;
 
+import org.springframework.core.io.ClassPathResource;
+import org.springframework.util.ObjectUtils;
+
 import java.sql.*;
+import java.util.Objects;
 
 public class UserDao {
 
@@ -39,19 +43,51 @@ public class UserDao {
         ps.setString(1, id);
 
         ResultSet rs = ps.executeQuery();
-        rs.next();
-        User user = new User();
-        user.setId(rs.getString("id"));
-        user.setName(rs.getString("name"));
-        user.setPassword(rs.getString("password"));
+
+        User user = null;
+        if (rs.next()) {
+            user = new User();
+            user.setId(rs.getString("id"));
+            user.setName(rs.getString("name"));
+            user.setPassword(rs.getString("password"));
+        }
 
         // connection close
         rs.close();
         ps.close();
         connection.close();
 
+        if (ObjectUtils.isEmpty(user)) throw new SQLException("user not found");
+
         return user;
     }
+
+    public void deleteAll() throws ClassNotFoundException, SQLException {
+        Connection connection = connectionMaker.makeConnection();
+
+        PreparedStatement ps = connection.prepareStatement("delete from users");
+        ps.executeUpdate();
+
+        ps.close();
+        connection.close();
+    }
+
+    public int getCount() throws ClassNotFoundException, SQLException {
+        Connection connection = connectionMaker.makeConnection();
+
+        PreparedStatement ps = connection.prepareStatement("select count(id) from users");
+
+        ResultSet rs = ps.executeQuery();
+        rs.next();
+        int count = rs.getInt(1);
+
+        rs.close();
+        ps.close();
+        connection.close();
+
+        return count;
+    }
+
 
     // 상속을 통한 확장
 //    public abstract Connection getConnection() throws ClassNotFoundException, SQLException;
