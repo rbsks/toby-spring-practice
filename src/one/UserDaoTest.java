@@ -2,8 +2,12 @@ package one;
 
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import java.sql.SQLException;
 import java.util.Arrays;
@@ -12,15 +16,21 @@ import java.util.List;
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
 
+@RunWith(SpringJUnit4ClassRunner.class)
+@ContextConfiguration(classes = DaoFactory.class)
 public class UserDaoTest {
 
+    @Autowired
+    private ApplicationContext context;
+    @Autowired
     private UserDao userDao;
 
     @Before
     public void setUp() {
-        ApplicationContext context = new AnnotationConfigApplicationContext(DaoFactory.class);
-        userDao = context.getBean("userDao", UserDao.class);
+//        ApplicationContext context = new AnnotationConfigApplicationContext(DaoFactory.class);
+//        userDao = context.getBean("userDao", UserDao.class);
     }
+
     /**
      * 유저 등록 및 조회 테스트
      *
@@ -55,6 +65,7 @@ public class UserDaoTest {
 
     /**
      * 등록한 유저 카운트 수 검증 테스트
+     *
      * @throws ClassNotFoundException
      * @throws SQLException
      */
