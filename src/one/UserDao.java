@@ -10,30 +10,44 @@ import java.util.Objects;
 public class UserDao {
 
     private ConnectionMaker connectionMaker;
+    private JdbcContext jdbcContext;
 
     public UserDao(ConnectionMaker connectionMaker) {
         this.connectionMaker = connectionMaker;
 //        this.connectionMaker = new DConnectionMaker();
+
+        this.jdbcContext = new JdbcContext();
+        this.jdbcContext.setConnection(connectionMaker);
     }
 
     public void add(User user) throws ClassNotFoundException, SQLException {
         // db connection
-        Connection connection = connectionMaker.makeConnection();
-        PreparedStatement ps = connection.prepareStatement(
-                "insert into users(id, name, password) values(?, ?, ?)");
-        try (connection;ps) {
-
-            // add user
-
-            ps.setString(1, user.getId());
-            ps.setString(2, user.getName());
-            ps.setString(3, user.getPassword());
-
-            ps.executeUpdate();
-
-        } catch (SQLException e) {
-            throw e;
-        }
+//        Connection connection = connectionMaker.makeConnection();
+//        PreparedStatement ps = connection.prepareStatement(
+//                "insert into users(id, name, password) values(?, ?, ?)");
+//        try (connection;ps) {
+//
+//            // add user
+//
+//            ps.setString(1, user.getId());
+//            ps.setString(2, user.getName());
+//            ps.setString(3, user.getPassword());
+//
+//            ps.executeUpdate();
+//
+//        } catch (SQLException e) {
+//            throw e;
+//        }
+        this.jdbcContext.workWithStatementStrategy(
+                connection -> {
+                    PreparedStatement ps = connection.prepareStatement(
+                            "insert into users(id, name, password) values(?, ?, ?)");
+                    ps.setString(1, user.getId());
+                    ps.setString(2, user.getName());
+                    ps.setString(3, user.getPassword());
+                    return ps;
+                }
+        );
     }
 
     public User get(String id) throws ClassNotFoundException, SQLException {
@@ -67,13 +81,16 @@ public class UserDao {
     }
 
     public void deleteAll() throws ClassNotFoundException, SQLException {
-        Connection connection = connectionMaker.makeConnection();
-        PreparedStatement ps = connection.prepareStatement("delete from users");
-        try(connection;ps) {
-            ps.executeUpdate();
-        } catch (SQLException e) {
-            throw e;
-        }
+//        Connection connection = connectionMaker.makeConnection();
+//        PreparedStatement ps = connection.prepareStatement("delete from users");
+//        try(connection;ps) {
+//            ps.executeUpdate();
+//        } catch (SQLException e) {
+//            throw e;
+//        }
+        this.jdbcContext.workWithStatementStrategy(
+                connection -> connection.prepareStatement("delete from users")
+        );
     }
 
     public int getCount() throws ClassNotFoundException, SQLException {
