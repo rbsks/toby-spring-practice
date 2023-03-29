@@ -1,11 +1,11 @@
 package one;
 
-import com.mysql.cj.jdbc.PreparedStatementWrapper;
-import org.springframework.core.io.ClassPathResource;
 import org.springframework.util.ObjectUtils;
 
-import java.sql.*;
-import java.util.Objects;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 
 public class UserDao {
 
@@ -14,30 +14,11 @@ public class UserDao {
 
     public UserDao(ConnectionMaker connectionMaker) {
         this.connectionMaker = connectionMaker;
-//        this.connectionMaker = new DConnectionMaker();
-
         this.jdbcContext = new JdbcContext();
         this.jdbcContext.setConnection(connectionMaker);
     }
 
     public void add(User user) throws ClassNotFoundException, SQLException {
-        // db connection
-//        Connection connection = connectionMaker.makeConnection();
-//        PreparedStatement ps = connection.prepareStatement(
-//                "insert into users(id, name, password) values(?, ?, ?)");
-//        try (connection;ps) {
-//
-//            // add user
-//
-//            ps.setString(1, user.getId());
-//            ps.setString(2, user.getName());
-//            ps.setString(3, user.getPassword());
-//
-//            ps.executeUpdate();
-//
-//        } catch (SQLException e) {
-//            throw e;
-//        }
         this.jdbcContext.workWithStatementStrategy(
                 connection -> {
                     PreparedStatement ps = connection.prepareStatement(
@@ -81,13 +62,6 @@ public class UserDao {
     }
 
     public void deleteAll() throws ClassNotFoundException, SQLException {
-//        Connection connection = connectionMaker.makeConnection();
-//        PreparedStatement ps = connection.prepareStatement("delete from users");
-//        try(connection;ps) {
-//            ps.executeUpdate();
-//        } catch (SQLException e) {
-//            throw e;
-//        }
         this.jdbcContext.workWithStatementStrategy(
                 connection -> connection.prepareStatement("delete from users")
         );
@@ -106,15 +80,4 @@ public class UserDao {
             throw e;
         }
     }
-
-
-    // 상속을 통한 확장
-//    public abstract Connection getConnection() throws ClassNotFoundException, SQLException;
-//     관심사의 분리
-//    private Connection getConnection() throws ClassNotFoundException, SQLException {
-//        Class.forName("com.mysql.cj.jdbc.Driver");
-//        Connection connection = DriverManager.getConnection(
-//                "jdbc:mysql://localhost:3306/toby?autoReconnect=True", "toby_use", "db1234");
-//        return connection;
-//    }
 }
