@@ -24,12 +24,8 @@ public class JdbcContext {
      * @throws SQLException
      */
     public void workWithStatementStrategy(StatementStrategy statementStrategy) throws ClassNotFoundException, SQLException {
-        Connection connection = connectionMaker.makeConnection();
-
-        // callback
-        PreparedStatement ps = statementStrategy.makePreparedStatement(connection);
-
-        try(connection;ps) {
+        try(Connection connection = connectionMaker.makeConnection();
+            PreparedStatement ps = statementStrategy.makePreparedStatement(connection)) {
 
             ps.executeUpdate();
 
