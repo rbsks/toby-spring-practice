@@ -1,10 +1,10 @@
 package one;
 
-import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.ApplicationContext;
+import org.springframework.dao.DataAccessException;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
@@ -20,15 +20,7 @@ import static org.junit.Assert.assertThat;
 public class UserDaoTest {
 
     @Autowired
-    private ApplicationContext context;
-    @Autowired
-    private UserDao userDao;
-
-    @Before
-    public void setUp() {
-//        ApplicationContext context = new AnnotationConfigApplicationContext(DaoFactory.class);
-//        userDao = context.getBean("userDao", UserDao.class);
-    }
+    private UserDaoJdbc userDaoJdbc;
 
     /**
      * 유저 등록 및 조회 테스트
@@ -37,27 +29,21 @@ public class UserDaoTest {
      * @throws SQLException
      */
     @Test
-    public void addAndGet() throws ClassNotFoundException, SQLException {
+    public void addAndGet() {
 
         // users table을 비우는 작업 후 검증
-        userDao.deleteAll();
-        assertThat(userDao.getCount(), is(0));
+        userDaoJdbc.deleteAll();
+        assertThat(userDaoJdbc.getCount(), is(0));
 
         User user = new User("rbsks147", "한규빈", "1111111");
 
-        userDao.add(user);
+        userDaoJdbc.add(user);
 
         // user 등록 후 검증
-        assertThat(userDao.getCount(), is(1));
+        assertThat(userDaoJdbc.getCount(), is(1));
 
-        User getUser = userDao.get(user.getId());
+        User getUser = userDaoJdbc.get(user.getId());
 
-//        수정 전
-//        System.out.println(getUser.getName());
-//        System.out.println(getUser.getPassword());
-//        System.out.println(getUser.getId() + " 조회 성공");
-
-//        수정 후
         assertThat(getUser.getName(), is(user.getName()));
         assertThat(getUser.getPassword(), is(user.getPassword()));
     }
@@ -69,7 +55,7 @@ public class UserDaoTest {
      * @throws SQLException
      */
     @Test
-    public void getCount() throws ClassNotFoundException, SQLException {
+    public void getCount() {
 
         List<User> userList = Arrays.asList(
                 new User("test1", "test1", "test1"),
@@ -77,13 +63,13 @@ public class UserDaoTest {
                 new User("test3", "test3", "test3")
         );
 
-        userDao.deleteAll();
-        assertThat(userDao.getCount(), is(0));
+        userDaoJdbc.deleteAll();
+        assertThat(userDaoJdbc.getCount(), is(0));
 
         int count = 1;
         for (User user : userList) {
-            userDao.add(user);
-            assertThat(userDao.getCount(), is(count++));
+            userDaoJdbc.add(user);
+            assertThat(userDaoJdbc.getCount(), is(count++));
         }
     }
 
@@ -93,12 +79,26 @@ public class UserDaoTest {
      * @throws ClassNotFoundException
      * @throws SQLException
      */
-    @Test(expected = SQLException.class)
-    public void getUserFailure() throws ClassNotFoundException, SQLException {
+    @Test(expected = EmptyResultDataAccessException.class)
+    public void getUserFailure() {
 
-        userDao.deleteAll();
-        assertThat(userDao.getCount(), is(0));
+        userDaoJdbc.deleteAll();
+        assertThat(userDaoJdbc.getCount(), is(0));
 
-        userDao.get("exceptionUser");
+        userDaoJdbc.get("exceptionUser");
     }
+
+    /**
+     * users table에 같은 id insert시 예외 테스트
+     *
+     */
+    @Test(expected = DataAccessException.class)
+    public void duplicateKey() {
+        userDaoJdbc.deleteAll();
+
+        User user = new User("rbsks147", "한규빈", "test1234");
+        userDaoJdbc.add(user);
+        userDaoJdbc.add(user);
+    }
+
 }

@@ -18,5 +18,7 @@
     <orderEntry type="library" name="spring-beans-5.3.18" level="project" />
     <orderEntry type="library" name="spring-context-5.3.18" level="project" />
     <orderEntry type="library" name="spring-test-5.3.18" level="project" />
+    <orderEntry type="library" name="spring-jdbc-5.3.18" level="project" />
+    <orderEntry type="library" name="spring-tx-5.3.18" level="project" />
   </component>
 </module>
